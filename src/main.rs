@@ -19,7 +19,7 @@ pub enum Cell {
 pub struct App {
     width: u32,
     height: u32,
-    _interval: Interval,
+    interval: Option<Interval>,
     cells: Vec<Cell>,
 }
 
@@ -56,7 +56,7 @@ impl App {
         App {
             width,
             height,
-            _interval: interval,
+            interval: Some(interval),
             cells,
         }
     }
@@ -101,6 +101,12 @@ impl App {
 
         self.cells = next;
     }
+
+    fn create_interval(ctx: &Context<App>) -> Interval {
+        let callback = ctx.link().callback(|_| Msg::Tick);
+        let interval = Interval::new(200, move || callback.emit(()));
+        interval
+    }
 }
 
 
@@ -121,6 +127,7 @@ fn view_cell(idx: usize, cell: &Cell, link: &Scope<App>) -> Html {
 
 pub enum Msg {
     Tick,
+    StartStop,
 }
 
 impl Component for App {
@@ -128,15 +135,21 @@ impl Component for App {
     type Properties = ();
 
     fn create(ctx: &Context<Self>) -> Self {
-        let callback = ctx.link().callback(|_| Msg::Tick);
-        let interval = Interval::new(200, move || callback.emit(()));
+        let interval = Self::create_interval(ctx);
 
         Self::new(interval)
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Tick => self.tick(),
+            Msg::StartStop => {
+                if self.interval.is_some() {
+                    self.interval = None;
+                } else {
+                    self.interval = Some(Self::create_interval(ctx));
+                }
+            }
         }
         true
     }
@@ -167,6 +180,8 @@ impl Component for App {
                         </div>
                     </section>
                 </section>
+                <button onclick={ ctx.link().callback(|_| Msg::StartStop) }>{ "Start / Stop"
+            }</button>
             </div>
         }
     }
