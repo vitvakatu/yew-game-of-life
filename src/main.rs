@@ -121,13 +121,16 @@ fn view_cell(idx: usize, cell: &Cell, link: &Scope<App>) -> Html {
     };
 
     html! {
-        <div key={idx} class={classes!("game-cellule", status)}></div>
+        <div key={idx} class={classes!("game-cellule", status)} onclick={
+            link.callback(move |_| Msg::Click(idx))
+        }></div>
     }
 }
 
 pub enum Msg {
     Tick,
     StartStop,
+    Click(usize),
 }
 
 impl Component for App {
@@ -150,6 +153,10 @@ impl Component for App {
                     self.interval = Some(Self::create_interval(ctx));
                 }
             }
+            Msg::Click(idx) => self.cells[idx] = match self.cells[idx] {
+                Cell::Alive => Cell::Dead,
+                Cell::Dead => Cell::Alive,
+            },
         }
         true
     }
