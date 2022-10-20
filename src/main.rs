@@ -23,6 +23,8 @@ pub struct App {
     cells: Vec<Cell>,
 }
 
+const TIME_BETWEEN_TICKS_MS: u32 = 50;
+
 impl App {
     fn get_index(&self, row: u32, column: u32) -> usize {
         (row * self.width + column) as usize
@@ -104,15 +106,10 @@ impl App {
 
     fn create_interval(ctx: &Context<App>) -> Interval {
         let callback = ctx.link().callback(|_| Msg::Tick);
-        let interval = Interval::new(200, move || callback.emit(()));
+        let interval = Interval::new(TIME_BETWEEN_TICKS_MS, move || callback.emit(()));
         interval
     }
 }
-
-
-
-
-/// Prepared code
 
 fn view_cell(idx: usize, cell: &Cell, link: &Scope<App>) -> Html {
     let status = match cell {
@@ -187,8 +184,7 @@ impl Component for App {
                         </div>
                     </section>
                 </section>
-                <button onclick={ ctx.link().callback(|_| Msg::StartStop) }>{ "Start / Stop"
-            }</button>
+                //<button onclick={ ctx.link().callback(|_| Msg::StartStop) }>{ "Start / Stop" }</button>
             </div>
         }
     }
