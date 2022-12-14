@@ -39,7 +39,7 @@ impl App {
         let height = 64;
 
         let cells = (0..width * height)
-            .map(|_| Cell::Dead)
+            .map(|i| if i % 2 == 0 || i % 7 == 0 { Cell::Alive } else { Cell::Dead })
             .collect();
 
         App {
