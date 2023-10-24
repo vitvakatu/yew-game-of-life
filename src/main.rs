@@ -50,7 +50,13 @@ impl App {
         let height = 64;
 
         let cells = (0..width * height)
-            .map(|i| if i % 2 == 0 || i % 7 == 0 { Cell::Alive } else { Cell::Dead })
+            .map(|i| {
+                if i % 2 == 0 || i % 7 == 0 {
+                    Cell::Alive
+                } else {
+                    Cell::Dead
+                }
+            })
             .collect();
 
         App {
@@ -104,7 +110,7 @@ impl App {
 
     fn create_interval(ctx: &Context<App>) -> Interval {
         let callback = ctx.link().callback(|_| Msg::Tick);
-        let interval = Interval::new(200, move || callback.emit(()));
+        let interval = Interval::new(12, move || callback.emit(()));
         interval
     }
 }
@@ -141,7 +147,7 @@ impl Component for App {
         match msg {
             Msg::Tick => self.tick(),
             Msg::StartStop => {
-                if let Some(_) = self._interval.take() {
+                if self._interval.take().is_some() {
                 } else {
                     self._interval = Some(Self::create_interval(ctx));
                 }
@@ -157,7 +163,9 @@ impl Component for App {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let cell_rows = self.cells.chunks(self.width as usize)
+        let cell_rows = self
+            .cells
+            .chunks(self.width as usize)
             .enumerate()
             .map(|(y, cells)| {
                 let cells = cells.iter().enumerate().map(|(x, cell)| {
@@ -182,7 +190,7 @@ impl Component for App {
                             { for cell_rows }
                         </div>
                     </section>
-                    <button onclick={onclick}>{ "Start/Stop" }</button>
+                    <button onclick={onclick}>{ "Start stop" }</button>
                 </section>
             </div>
         }
