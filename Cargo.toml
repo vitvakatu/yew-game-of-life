@@ -4,8 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-yew = "0.19"
+web-sys = { version = "*", features = ["MouseEvent"] }
+yew = { version = "0.21", features = ["csr"] }
 getrandom = { version = "0.2", features = ["js"] }
 log = "0.4"
 wasm-logger = "0.2"
-gloo-timers = "0.2"
+gloo-timers = "0.3"

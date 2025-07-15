@@ -5,9 +5,8 @@ use yew::{classes, html, Component, Context, Html};
 fn main() {
     wasm_logger::init(wasm_logger::Config::default());
     log::trace!("Initializing yew...");
-    yew::start_app::<App>();
+    yew::Renderer::<App>::new().render();
 }
-
 
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
